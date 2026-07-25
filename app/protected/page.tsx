@@ -3,9 +3,8 @@ import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function ProtectedPage() {
+async function UserDetails() {
   const supabase = await createClient();
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -14,6 +13,17 @@ export default async function ProtectedPage() {
     return redirect("/auth/login");
   }
 
+  return (
+    <div className="flex flex-col gap-2 items-start">
+      <h2 className="font-bold text-2xl mb-4">Your user details</h2>
+      <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
+        {JSON.stringify(user, null, 2)}
+      </pre>
+    </div>
+  );
+}
+
+export default function ProtectedPage() {
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
@@ -25,17 +35,13 @@ export default async function ProtectedPage() {
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          {JSON.stringify(user, null, 2)}
-        </pre>
-      </div>
+      
+      <Suspense fallback={<div>Loading user details...</div>}>
+        <UserDetails />
+      </Suspense>
+
       <div>
         <h2 className="font-bold text-2xl mb-4">Next steps</h2>
-        <Suspense fallback={<div>Loading...</div>}>
-          {/* Add any subcomponents or client features here */}
-        </Suspense>
       </div>
     </div>
   );
