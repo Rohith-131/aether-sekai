@@ -1,13 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
 import { Hero } from "@/components/hero";
 import { DeployButton } from "@/components/deploy-button";
 import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { createClient } from "@/lib/supabase/server";
-
-const hasEnvVars = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const themeStyles: Record<string, any> = {
   green: {
@@ -45,7 +42,6 @@ const themeStyles: Record<string, any> = {
   }
 };
 
-// Async data-fetching wrapper component for the grid
 async function WallpaperGridContainer() {
   const supabase = await createClient();
   const { data: wallpapers } = await supabase
@@ -106,7 +102,6 @@ async function WallpaperGridContainer() {
   );
 }
 
-// Synchronous default export component for the page
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center bg-black relative overflow-hidden group">
@@ -126,13 +121,9 @@ export default function Home() {
             
             <div className="flex items-center gap-2">
                 <DeployButton/>
-                {hasEnvVars ? (
-                  <EnvVarWarning />
-                ) : (
-                  <Suspense>
-                    <AuthButton />
-                  </Suspense>
-                )}
+                <Suspense>
+                  <AuthButton />
+                </Suspense>
             </div>
           </div>
         </nav>
